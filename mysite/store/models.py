@@ -6,10 +6,11 @@ from django.db import models
 # Ecommerce for a perfume store
 # Entitys: Client,
 # Product, Order,
+# ProductCategory, ProductBrand
 # OrderItem, Cart,
 # WishList, Category,
 # Brand,
-# ProductCategory, ProductBrand
+
 
 
 # Client

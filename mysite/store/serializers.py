@@ -46,3 +46,5 @@ class BrandSerializer(serializers.ModelSerializer):
 
         model = Brand
         fields = "__all__"
+
+# 

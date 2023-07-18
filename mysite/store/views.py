@@ -1,57 +1,95 @@
 """Set Up Views from the api app"""
-
 from django.shortcuts import render
-from django.http import JsonResponse
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from .serializers import (
-    ProductSerializer,
-    CategorySerializer,
-    BrandSerializer,
-)
+from rest_framework.generics import ListAPIView
 from .models import Product, Category, Brand
+from .serializers import ProductSerializer, CategorySerializer, BrandSerializer
 
-
-@api_view(["GET"])
-def apioverview(request):
-    """apiOverview"""
-    api_urls = {
-        "List": "/product-list/",
-        "Detail View": "/product-detail/<str:pk>/",
-        "Create": "/product-create/",
-        "Update": "/product-update/<str:pk>/",
-        "Delete": "/product-delete/<str:pk>/",
+def all_products(request):
+    """A view to show all products, including sorting and search queries"""
+    products = Product.objects.all() # pylint: disable=no-member
+    prices = Product.objects.all().values_list("price", flat=True) # pylint: disable=no-member
+    categories = Category.objects.all() # pylint: disable=no-member
+    brands = Brand.objects.all() # pylint: disable=no-member
+    context = {
+        "products": products,
+        "categories": categories,
+        "brands": brands,
+        "prices": prices,
     }
-    return Response(api_urls)
+    return render(request, "products.html", context)
 
-@api_view(["GET"])
-def product_list(request):
-    """List all products"""
-    products = Product.objects.all()
-    serializer = ProductSerializer(products, many=True)
-    return Response(serializer.data)
+def product_per_category(request, category_name):
+    """A view to show products per category"""
+    products = Product.objects.filter(category__name=category_name) # pylint: disable=no-member
+    prices = Product.objects.filter(category__name=category_name).values_list("price", flat=True) # pylint: disable=no-member
+    categories = Category.objects.all() # pylint: disable=no-member
+    brands = Brand.objects.all() # pylint: disable=no-member
+    context = {
+        "products": products,
+        "categories": categories,
+        "brands": brands,
+        "prices": prices,
+    }
+    return render(request, "products.html", context)
 
-@api_view(["GET"])
-def product_detail(request, pk):
-    """Retrieve a product"""
-    product = Product.objects.get(id=pk)
-    serializer = ProductSerializer(product, many=False)
-    return Response(serializer.data)
+def product_per_brand(request, brand_name):
+    """A view to show products per brand"""
+    products = Product.objects.filter(brand__name=brand_name) # pylint: disable=no-member
+    prices = Product.objects.filter(brand__name=brand_name).values_list("price", flat=True) # pylint: disable=no-member
+    categories = Category.objects.all() # pylint: disable=no-member
+    brands = Brand.objects.all() # pylint: disable=no-member
+    context = {
+        "products": products,
+        "categories": categories,
+        "brands": brands,
+        "prices": prices,
+    }
+    return render(request, "products.html", context)
 
-@api_view(["POST"])
-def product_create(request):
-    """Create a product"""
-    serializer = ProductSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-    return Response(serializer.data)
+def product_by_price(request, price):
+    """A view to show products by price"""
+    products = Product.objects.filter(price=price) # pylint: disable=no-member
+    prices = Product.objects.filter(price=price).values_list("price", flat=True) # pylint: disable=no-member
+    categories = Category.objects.all() # pylint: disable=no-member
+    brands = Brand.objects.all() # pylint: disable=no-member
+    context = {
+        "products": products,
+        "categories": categories,
+        "brands": brands,
+        "prices": prices,
+    }
+    return render(request, "products.html", context)
 
-@api_view(["POST"])
-def product_update(request, pk):
-    """Update a product"""
-    product = Product.objects.get(id=pk)
-    serializer = ProductSerializer(instance=product, data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-    return Response(serializer.data)
+def product_between_prices(request, price1, price2):
+    """A view to show products between prices"""
+    products = Product.objects.filter(price__range=(price1, price2)) # pylint: disable=no-member
+    prices = Product.objects.filter(price__range=(price1, price2)).values_list("price", flat=True) # pylint: disable=no-member
+    categories = Category.objects.all() # pylint: disable=no-member
+    brands = Brand.objects.all() # pylint: disable=no-member
+    context = {
+        "products": products,
+        "categories": categories,
+        "brands": brands,
+        "prices": prices,
+    }
+    return render(request, "products.html", context)
 
+class ProductListApi(ListAPIView):
+    """ListApiView definition for Product."""
+    queryset = Product.objects.all() # pylint: disable=no-member
+    serializer_class = ProductSerializer
+
+class CategoryListApi(ListAPIView):
+    """ListApiView definition for Category."""
+    queryset = Category.objects.all() # pylint: disable=no-member
+    serializer_class = CategorySerializer
+
+class BrandListApi(ListAPIView):
+    """ListApiView definition for Brand."""
+    queryset = Brand.objects.all() # pylint: disable=no-member
+    serializer_class = BrandSerializer
+
+class ProductGiorgioArmani(ListAPIView):
+    """ListApiView definition for Product."""
+    queryset = Product.objects.filter(brand__name="Giorgio Armani") # pylint: disable=no-member
+    serializer_class = ProductSerializer
