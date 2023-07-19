@@ -1,6 +1,7 @@
 <!-- ecommerce -->
 <!doctype html>
 <html lang="es">
+
 <head>
   {% load static %}
   <title>Store</title>
@@ -10,118 +11,141 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <!-- Bootstrap CSS v5.2.1 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
-  integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
 </head>
 
 <body class="bg-light row col-12">
-  
+
   <header class="container">
     <!-- place navbar here -->
     <div class="row justify-content-center align-items-center">
-      
+
       <nav class="navbar navbar-light bg-light fixed-top">
         <div class="container-fluid">
-          <a class="navbar-brand" href="#">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Perfume_logo_vector.svg" alt="" width="200" class="d-inline-block align-text-top">
+          <a class="navbar-brand" href="/">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Perfume_logo_vector.svg" alt="" width="200"
+              class="d-inline-block align-text-top">
             Store
           </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
-          aria-controls="offcanvasNavbar">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
-        aria-labelledby="offcanvasNavbarLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Perfume</h5>
-          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            aria-controls="offcanvasNavbar">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+            aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Perfume</h5>
+              <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+              <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="/">Home</a>
+                </li>
+                <!-- by category -->
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">Por Tipo</a>
+                  <div class="dropdown-menu" aria-labelledby="dropdownId">
+                    {% for category in categories %}
+                    <a class="dropdown-item" href="category/{{category.name }}">{{ category.name }}</a>
+                    {% endfor %}
+                  </div>
+                </li>
+                <!-- by brand -->
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">Por Marca</a>
+                  <div class="dropdown-menu" aria-labelledby="dropdownId">
+                    {% for brand in brands %}
+                    <a class="dropdown-item" href="brand/{{ brand.name }}">{{ brand.name }}</a>
+                    {% endfor %}
+                  </div>
+                </li>
+                <!-- by prices -->
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">Por Precio</a>
+                  <div class="dropdown-menu" aria-labelledby="dropdown-Id">
+                    {% for price in prices %}
+                    <a class="dropdown-item" href="price/{{ price|floatformat:'0' }}">{{ price|floatformat:'0' }}</a>
+                    {% endfor %}
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <div class="offcanvas-body">
-          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="/">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
-            <!-- by category -->
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-bs-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">Por Tipo</a>
-              <div class="dropdown-menu" aria-labelledby="dropdownId">
-                {% for category in categories %}
-                <a class="dropdown-item" href="category/{{category.name }}">{{ category.name }}</a>
-                {% endfor %}
+      </nav>
+      <!-- End of the navbar -->
+    </div>
+  </header>
+  <main>
+    <div class="row justify-content-center mt-5">
+      <h1 class="text-center col-12 mt-5">Productos</h1>
+    </div>
+    <!-- Bootstrap card for each product in products -->
+    <style>
+      .card:hover {
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .card {
+        transition: box-shadow 0.3s ease-in-out;
+      }
+    </style>
+    <div class="row justify-content-center">
+      {% for product in products %}
+      <div class="card m-2 p-2 content-center col-3">
+        <img src="{{ MEDIA_URL }}{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{ product.category }}</h6>
+          <h6 class="card-subtitle mb-2 text-muted">{{ product.brand }}</h6>
+          <p class="card-text">{{ product.description }}</p>
+          <p class="card-text">{{ product.price }}</p>
+          <a href="#" class="btn btn-primary">Info</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </main>
+  <footer>
+    <!-- place footer here -->
+    <!-- Logo and a text: "Los Mejores Perfumes" -->
+    <div class="row col-12 justify-content-center align-items-center">
+      <div class="col-12">
+        <div class="row justify-content-center align-items-center">
+          <div class="col-12">
+            <!-- Button: Ir a la tienda -->
+            <div class="row justify-content-center align-items-center">
+              <div class="col-4"></div>
+              <div class="col-4 justify-content-center">
+                <a href="store/" class="btn btn-lg btn-block active m-2" role="button" aria-pressed="true">
+                  Ir a la tienda</a>
               </div>
-            </li>
-            <!-- by brand -->
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-bs-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">Por Marca</a>
-              <div class="dropdown-menu" aria-labelledby="dropdownId">
-                {% for brand in brands %}
-                <a class="dropdown-item" href="brand/{{ brand.name }}">{{ brand.name }}</a>
-                {% endfor %}
-              </div>
-            </li>
-            <!-- by prices -->
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-bs-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">Por Precio</a>
-              <div class="dropdown-menu" aria-labelledby="dropdown-Id">
-                {% for price in prices %}
-                <a class="dropdown-item" href="price/{{ price|floatformat:'0' }}">{{ price|floatformat:'0' }}</a>
-                {% endfor %}
-              </div>
-            </li>
-            </ul>
+              <div class="col-4"></div>
+            </div>
+          </div>
+          <div class="row justify-content-center align-items-center">
+            <div class="col-12">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/8/8e/Perfume_logo_vector.svg" alt="" width="100%"
+                class="d-inline-block align-text-top">
+            </div>
           </div>
         </div>
       </div>
-    </nav>
-    <!-- End of the navbar -->
-  </div>
-</header>
-<main>
-  <div class="row justify-content-center mt-5">
-    <h1 class="text-center col-12 mt-5">Productos</h1>
-  </div>
-  <!-- Bootstrap card for each product in products -->
-  <style>
-    .card:hover {
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-    }
-    .card {
-      transition: box-shadow 0.3s ease-in-out;
-    }
-  </style>
-  <div class="row justify-content-center">
-    {% for product in products %}
-    <div class="card m-2 p-2 content-center col-3">
-      <img src="{{ MEDIA_URL }}{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
-      <div class="card-body">
-        <h5 class="card-title">{{ product.name }}</h5>
-        <h6 class="card-subtitle mb-2 text-muted">{{ product.category }}</h6>
-        <h6 class="card-subtitle mb-2 text-muted">{{ product.brand }}</h6>
-        <p class="card-text">{{ product.description }}</p>
-        <p class="card-text">{{ product.price }}</p>
-        <a href="#" class="btn btn-primary">Info</a>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-  
-</main>
-<footer>
-  <!-- place footer here -->
-</footer>
-<!-- Bootstrap JavaScript Libraries -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
-integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
-</script>
+  </footer>
+  <!-- Bootstrap JavaScript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+    </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
-integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
-</script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+    integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+    </script>
 </body>
 
 </html>
